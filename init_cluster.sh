@@ -10,9 +10,11 @@ sleep 2
 
 redis_host_list=""
 
+PASSWORD="foobarbaz"
+
 for host in $REDIS_HOSTS
 do
-    redis_host_list="$redis_host_list $host"
+    redis_host_list="$redis_host_list $host:$PASSWORD"
 done
 
 echo "REDIS_HOSTS: $REDIS_HOSTS"

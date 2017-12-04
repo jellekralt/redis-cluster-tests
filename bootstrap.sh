@@ -3,4 +3,4 @@
 # need make to build redis
 sudo apt-get install -y git ruby make supervisor
 
-sudo gem install redis -v 3.3.3
+sudo gem install redis -v 3.0.4
