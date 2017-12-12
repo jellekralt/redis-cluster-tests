@@ -1,14 +1,15 @@
-Redis Cluster in Vagrant
+Redis Cluster Tests
 =====================
 
-*Configures a redis cluster in vagrant, with multi-machine setup*
+*A collection of tests that run on an (emulated) multi-dc Redis cluster setup*
 
-The cluster is 6 redis instances running with 3 master & 3 slaves, one slave for each master.
-The cluster is split over two virtual machines to simulate a dual datacenter setup, for split-brain testing
+The cluster contains 6 Redis instances running with 3 master & 3 slaves, one slave for each master.
+The cluster is split over two virtual machines to simulate a dual datacenter setup, for testing brutal DC loss, and split-brain.
 
-It will allways run on the latest in the 3.0 branch of redis git repo (https://github.com/antirez/redis). To change this, change the git clone command inside `./build_redis.sh`.
-
-When redis 3.0 will be stable and released this repo will update to use master branch.
+## Tech
+* Vagrant, to boot up and provision the VMs
+* Redis (obviously)
+* Node.js, for running the tests
 
 ## Setup
 How to set up vagrant and start the cluster image.
@@ -35,3 +36,9 @@ Internally, the two VM's run in a private network, at:
 * `10.0.0.12:7003`
 * `10.0.0.12:7004`
 * `10.0.0.12:7005`
+
+## Running the tests
+
+1. Access one of the two VMs: `vagrant ssh redis1`
+1. Go to the tester folder: `cd /vagrant/tester`
+1. Run the test cases: `node main.js`

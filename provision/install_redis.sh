@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-source /vagrant/redis_vars.sh
+source /vagrant/provision/redis_vars.sh
 
 
 rm -rf $REDIS_SUPERVISOR_CONF

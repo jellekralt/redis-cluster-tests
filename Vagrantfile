@@ -18,15 +18,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
       vm_ports = ((0..2).map do |i| port + i end).join(' ')
 
-      puts "Redis ports: #{vm_ports}"
-
       # install the redis server
-      redis.vm.provision :shell, :path => "bootstrap.sh"
-      redis.vm.provision :shell, :path => "build_redis.sh"
-      redis.vm.provision :shell, :path => "install_redis.sh", :env => {"PORTS" => vm_ports, "HOSTS" => hosts}
+      redis.vm.provision :shell, :path => "provision/bootstrap.sh"
+      redis.vm.provision :shell, :path => "provision/build_redis.sh"
+      redis.vm.provision :shell, :path => "provision/install_redis.sh", :env => {"PORTS" => vm_ports, "HOSTS" => hosts}
 
       if (i == 2) 
-        redis.vm.provision :shell, :path => "init_cluster.sh", :env => {"PORTS" => vm_ports, "HOSTS" => hosts}
+        redis.vm.provision :shell, :path => "provision/init_cluster.sh", :env => {"PORTS" => vm_ports, "HOSTS" => hosts}
       end
 
       (1..3).each do |i|
