@@ -22,12 +22,16 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       redis.vm.provision :shell, :path => "provision/bootstrap.sh"
       redis.vm.provision :shell, :path => "provision/build_redis.sh"
       redis.vm.provision :shell, :path => "provision/install_redis.sh", :env => {"PORTS" => vm_ports, "HOSTS" => hosts}
-
+      
       if (i == 2) 
         redis.vm.provision :shell, :path => "provision/init_cluster.sh", :env => {"PORTS" => vm_ports, "HOSTS" => hosts}
       end
-
+      
+      redis.vm.provision :shell, :inline => "mkdir -p /vagrant/logs", :privileged => false
+      redis.vm.provision :shell, :inline => "echo '' | crontab -", :privileged => false
+      
       (1..3).each do |i|
+        # redis.vm.provision :shell, :inline => "{ crontab -l; cat /vagrant/provision/crontab | envsubst; } | crontab -", :env => {"REDIS_PORT" => port}, :privileged => false
         redis.vm.network "forwarded_port", guest: port, host: port
         port = port + 1
       end

@@ -26,7 +26,8 @@ module.exports = {
     }
   ],
   options: {
-    enableReadyCheck: true,
+    enableReadyCheck: false,
+    enableOfflineQueue: false,
     redisOptions: {
       password: 'foobarbaz'
     }

@@ -4,15 +4,15 @@ const PORTS = [7000,7001,7002,7003,7004,7005];
 
 async function cutLink() {
   return Promise.all([
-    iptables('-A INPUT -s 10.0.0.12 -j DROP'),
-    iptables('-A OUTPUT -d 10.0.0.12 -j DROP')
+    iptables('-A INPUT -s 10.0.0.12 -j REJECT'),
+    iptables('-A OUTPUT -d 10.0.0.12 -j REJECT')
   ]);
 }
 
 async function fixLink() {
   return Promise.all([
-    iptables('-D INPUT -s 10.0.0.12 -j DROP'),
-    iptables('-D OUTPUT -d 10.0.0.12 -j DROP')
+    iptables('-D INPUT -s 10.0.0.12 -j REJECT'),
+    iptables('-D OUTPUT -d 10.0.0.12 -j REJECT')
   ]);
 }
 

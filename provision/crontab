@@ -1,0 +1,1 @@
+* * * * * /usr/bin/ruby /vagrant/scripts/cluster_health/main.rb $REDIS_PORT >> /vagrant/logs/crontab-$REDIS_PORT.log 2>&1

@@ -44,8 +44,7 @@ async function beforeAll(fn) {
 async function set(fn) {
   console.log('');
   console.log('');
-  console.log(chalk`{yellow Starting the test...}`);
-  console.log(chalk`{yellow ------------------------------}`)
+  console.log(chalk`{bgYellow {black ⚐ Starting the test...                            }}`);
 
   await fn.call();
   

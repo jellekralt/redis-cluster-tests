@@ -1287,7 +1287,6 @@ class RedisTrib
 
         xputs ">>> Creating cluster"
         argv[0..-1].each{|n|
-            xputs "Password: #{opt['password']}"
             node = ClusterNode.new(n, opt['password'])
             node.connect(:abort => true)
             node.assert_cluster

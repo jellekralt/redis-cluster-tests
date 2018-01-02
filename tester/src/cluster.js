@@ -17,6 +17,10 @@ module.exports = class Cluster {
     return this.redis.disconnect(...args);
   }
 
+  connect(...args) {
+    return this.redis.connect(...args);
+  }
+
   quit(...args) {
     return this.redis.quit(...args);
   }
@@ -43,13 +47,14 @@ module.exports = class Cluster {
     });
   }
 
-  async forceMasters() {
+  async forceMasters(ports) {
     let masters = this.redis.nodes('all');
 
     return Promise.all(masters.map(async (node) => {
       let info = parseInfo(await node.info());
 
-      if (info.get('role') === 'slave' && [7000,7001,7002].indexOf(parseInt(info.get('tcp_port'))) > -1) {    
+      if (info.get('role') === 'slave' && ports.indexOf(parseInt(info.get('tcp_port'))) > -1) {    
+        // Pulling my hairs out, don't know why multiple forces are necessary
         await node.cluster(['failover', 'takeover'])
       }
     })).catch((e) => {
@@ -74,13 +79,13 @@ module.exports = class Cluster {
       });
     }));
 
-    info = info.map(node => new Map(node.split('\r\n').map(row => row.split(':'))));
-    
-    let clusterFails = info.some((node) => { 
-      return node.get('cluster_state') !== 'ok';
-    });
+    let clusterNodes = info
+      .map(node => parseInfo(node))
+      .filter(node => node.get('cluster_state'));
+    let clusterFails = clusterNodes
+      .some(node => node.get('cluster_state') !== 'ok');
 
-    return !clusterFails;
+    return clusterNodes.length > 0 && !clusterFails;
   }
 
   async getMaster() {
@@ -107,8 +112,27 @@ module.exports = class Cluster {
       this.redis.on('ready', resolve);
     });
   }
+
+  async connectAndWaitUntilReady() {
+    return new Promise((resolve, reject) => {
+      this.redis.on('ready', resolve);
+
+      this.redis.connect();
+    });
+  }
   
   getNodes() {
     return this.redis.nodes();
+  }
+
+  async getNodesInfo() {
+    return Promise.all(this.redis.nodes()
+      .map(async node => {
+        let info = parseInfo(await node.info());
+        let currentNode = parseNodes(await node.cluster('NODES')).filter(n => n.flags.indexOf('myself') > -1)[0];
+
+        return { info, currentNode }
+      })
+    );
   }
 }

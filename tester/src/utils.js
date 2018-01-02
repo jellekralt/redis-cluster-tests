@@ -2,7 +2,11 @@ const NODE_COLUMNS = ['id', 'ip_port', 'flags', 'master', 'ping_sent', 'pong_rec
 const NODE_COLUMNS_OTHER = 'slot';
 
 function parseInfo(info) {
-  return new Map(info.split('\r\n').filter(row => row.indexOf(':') > -1).map(row => row.split(':')));
+  return new Map(
+    info.split('\r\n')
+        .filter(row => row.indexOf(':') > -1)
+        .map(row => row.split(':'))
+  );
 }
 
 function parseNodes(nodes) {
@@ -13,7 +17,18 @@ function parseNodes(nodes) {
   }, {}));
 }
 
+function printBasicNodeInfo(nodes) {
+  nodes.forEach(node => {
+    console.log(`
+- NODE INFO ---------------------------
+address: ${node.currentNode.ip_port}
+role: ${node.info.get('role')}
+connected slaves: ${node.info.get('connected_slaves')}`)
+  });
+};
+
 module.exports = {
   parseInfo,
-  parseNodes
+  parseNodes,
+  printBasicNodeInfo
 }
